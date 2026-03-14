@@ -1,10 +1,6 @@
 import React from "react";
-import styles from './Categories.module.css';
+import styles from "./Categories.module.css";
+
 export default function Categories() {
-  return (
-    <>
-      <h1>Categories</h1>
-      <h2>Hello</h2>
-    </>
-  );
+  return <></>;
 }

@@ -14,6 +14,7 @@ import Products from "./components/Products/Products.jsx";
 import Coupons from "./components/Coupons/Coupons.jsx";
 import Orders from "./components/Orders/Orders.jsx";
 import NotFound from "./components/NotFound/NotFound.jsx";
+import UserProvider from "./contexts/UserContext";
 let routes = createBrowserRouter([
   {
     path: "/",
@@ -59,7 +60,9 @@ let routes = createBrowserRouter([
 function App() {
   return (
     <>
-      <RouterProvider router={routes}></RouterProvider>
+      <UserProvider>
+        <RouterProvider router={routes}></RouterProvider>
+      </UserProvider>
     </>
   );
 }
