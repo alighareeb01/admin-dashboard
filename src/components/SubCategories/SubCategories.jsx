@@ -18,20 +18,38 @@ export default function SubCategories() {
     },
     resolver: zodResolver(schema),
   });
-
-  const [mainCategoty, setMainCategoty] = useState("");
-  const { categoriesData, setCategoriesData } = useContext(User);
+  const [currentSubCategory, setCurrentSubCategory] = useState({});
+  const [categoriesData, setCategoriesData ] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   useEffect(() => {
     getAllSubCategories();
+    getAllCategories();
   }, []);
+
+  useEffect(() => {
+    console.log("categoriesData updated:", categoriesData);
+  }, [categoriesData]);
+
+  function getAllCategories() {
+    axios
+      .get("https://nti-ecommerce.vercel.app/api/v1/categories", {
+        headers: {
+          token: localStorage.getItem("dbToken"),
+        },
+      })
+      .then((res) => {
+        setCategoriesData(res.data.categories);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   function openModal(subCategory = null) {
     setIsModalOpen(true);
-
     if (subCategory) {
       setIsEdit(true);
       setValue("name", subCategory.name);
@@ -50,36 +68,15 @@ export default function SubCategories() {
         },
       })
       .then((res) => {
-        // console.log(res);
         setSubCategories(res.data.categories);
       })
       .catch((err) => {
-        // console.log(err);
+        console.log(err);
       });
   }
-  function submitSubCategories(data) {
-    console.log(data);
 
-    axios
-      .post("https://nti-ecommerce.vercel.app/api/v1/subCategories", data, {
-        headers: {
-          token: localStorage.getItem("dbToken"),
-        },
-      })
-      .then((res) => {
-        // console.log(res);
-
-        getAllSubCategories();
-      })
-      .catch((err) =>
-        console.error("Error:", err.response?.data || err.message),
-      )
-      .finally(() => {
-        closeModal();
-      });
-  }
   function deleteSubCategories(id) {
-    // console.log(id);
+
     axios
       .delete(`https://nti-ecommerce.vercel.app/api/v1/subCategories/${id}`, {
         headers: {
@@ -87,33 +84,58 @@ export default function SubCategories() {
         },
       })
       .then((res) => {
-        // console.log(res);
         getAllSubCategories();
       })
-      .catch((err) => {
-        // console.error("Status:", err.response?.status); // 401 = Unauthorized, 404 = Not Found
-        // console.error("Message:", err.response?.data?.message || err.message);
-      });
-    // console.log("mndavhjasdvhuvsahuvsdhauvhuadsvhudsav");
+      .catch((err) => {console.log(err);});
   }
   function editSubCategories(el) {
-    // console.log(el);
     openModal(el);
-    axios
-      .put(`https://nti-ecommerce.vercel.app/api/v1/subCategories/${el._id}`, {
-        headers: {
-          token: localStorage.getItem("dbToken"),
-        },
-      })
-      .then((res) => {
-        // console.log(res);
-        getAllSubCategories();
-      })
-      .catch((err) => {
-        // console.log(err);
-      });
+    setCurrentSubCategory(el);
   }
-  // console.log(categoriesData, "line 19");
+
+  function submitSubCategories(data) {
+    if (isEdit == true) {
+      axios
+        .put(
+          `https://nti-ecommerce.vercel.app/api/v1/subCategories/${currentSubCategory._id}`,
+          data,
+          {
+            headers: {
+              token: localStorage.getItem("dbToken"),
+            },
+          },
+        )
+        .then((res) => {
+          console.log(res, "line 93");
+          getAllSubCategories();
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setIsEdit(false);
+          closeModal();
+        });
+    } else {
+      axios
+        .post("https://nti-ecommerce.vercel.app/api/v1/subCategories", data, {
+          headers: {
+            token: localStorage.getItem("dbToken"),
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          getAllSubCategories();
+        })
+        .catch((err) =>
+          console.error("Error:", err.response?.data || err.message),
+        )
+        .finally(() => {
+          closeModal();
+          setIsEdit(false);
+        });
+    }
+  }
   return (
     <>
       <div className="flex justify-end my-4">
@@ -161,14 +183,11 @@ export default function SubCategories() {
                     {el.name}
                   </th>
                   <td className="px-6 py-5">
-                    <div className="w-24 h-24 md:w-32 md:h-32 overflow-hidden rounded-2xl  shadow-sm">
-                      <p>
-                        {
-                          categoriesData.find(
-                            (category) => category._id === el.category,
-                          )?.name
-                        }
-                      </p>
+                    <div className="flex items-center">
+                      <span className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-neutral-secondary-medium text-brand font-bold text-sm border border-default shadow-sm transition-all hover:bg-neutral-secondary-strong">
+                        <i className="fa-solid fa-layer-group text-brand-medium opacity-80"></i>
+                        {categoriesData.find((cat) => cat._id == el.category)?.name || "No Category"}
+                      </span>
                     </div>
                   </td>
 

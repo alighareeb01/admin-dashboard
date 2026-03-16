@@ -11,13 +11,13 @@ let schema = z.object({
   image: z.any().optional(),
 });
 export default function Categories() {
-  const { categoriesData, setCategoriesData } = useContext(User);
+  const [ categoriesData, setCategoriesData ] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   useEffect(() => {
     getAllCategories();
   }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [currentCategory, setCurrentCategory] = useState({});
   let { register, handleSubmit, formState, setValue } = useForm({
     defaultValues: {
       name: "",
@@ -25,6 +25,7 @@ export default function Categories() {
     },
     resolver: zodResolver(schema),
   });
+
   function openModal(category = null) {
     setIsModalOpen(true);
 
@@ -54,6 +55,8 @@ export default function Categories() {
       });
   }
   function submitCategories(data) {
+    console.log(currentCategory, "line 57");
+
     console.log(data);
     let formData = new FormData();
     formData.append("name", data.name);
@@ -76,22 +79,47 @@ export default function Categories() {
       }
     }
     console.log("======================");
-    axios
-      .post("https://nti-ecommerce.vercel.app/api/v1/categories", formData, {
-        headers: {
-          token: localStorage.getItem("dbToken"),
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        getAllCategories();
-      })
-      .catch((err) =>
-        console.error("Error:", err.response?.data || err.message),
-      )
-      .finally(() => {
-        closeModal();
-      });
+    if (isEdit == true) {
+      axios
+        .put(
+          `https://nti-ecommerce.vercel.app/api/v1/categories/${currentCategory._id}`,
+          formData,
+          {
+            headers: {
+              token: localStorage.getItem("dbToken"),
+            },
+          },
+        )
+        .then((res) => {
+          console.log(res, "line 93");
+          getAllCategories();
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setIsEdit(false);
+          closeModal();
+        });
+    } else {
+      axios
+        .post("https://nti-ecommerce.vercel.app/api/v1/categories", formData, {
+          headers: {
+            token: localStorage.getItem("dbToken"),
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          getAllCategories();
+        })
+        .catch((err) =>
+          console.error("Error:", err.response?.data || err.message),
+        )
+        .finally(() => {
+          closeModal();
+          setIsEdit(false);
+        });
+    }
   }
   function deleteCategory(id) {
     console.log(id);
@@ -112,21 +140,8 @@ export default function Categories() {
     console.log("mndavhjasdvhuvsahuvsdhauvhuadsvhudsav");
   }
   function editCategory(el) {
-    console.log(el);
     openModal(el);
-    axios
-      .put(`https://nti-ecommerce.vercel.app/api/v1/categories/${el._id}`, {
-        headers: {
-          token: localStorage.getItem("dbToken"),
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        getAllCategories();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    setCurrentCategory(el);
   }
   return (
     <>

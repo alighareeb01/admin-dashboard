@@ -19,7 +19,7 @@ export default function Brands() {
 
   const [brands, setBrands] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  const [currentBrandId, setCurrentBrandId] = useState(null);
+  const [currentBrand, setCurrentBrand] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -52,31 +52,10 @@ export default function Brands() {
         },
       })
       .then((res) => {
-        setBrands(res.data.data || res.data.brands || res.data.categories || []);
+        setBrands(res.data.brands);
       })
       .catch((err) => {
         console.error("Error fetching brands:", err);
-      });
-  }
-
-  function submitBrands(data) {
-    const url = isEdit 
-      ? `https://nti-ecommerce.vercel.app/api/v1/brands/${currentBrandId}`
-      : "https://nti-ecommerce.vercel.app/api/v1/brands";
-    
-    const method = isEdit ? "put" : "post";
-
-    axios[method](url, data, {
-      headers: {
-        token: localStorage.getItem("dbToken"),
-      },
-    })
-      .then(() => {
-        getAllBrands();
-        closeModal();
-      })
-      .catch((err) => {
-        console.error("Error submitting brand:", err.response?.data || err.message);
       });
   }
 
@@ -87,7 +66,7 @@ export default function Brands() {
           token: localStorage.getItem("dbToken"),
         },
       })
-      .then(() => {
+      .then((res) => {
         getAllBrands();
       })
       .catch((err) => {
@@ -95,6 +74,54 @@ export default function Brands() {
       });
   }
 
+  function editBrand(el) {
+    openModal(el);
+    setCurrentBrand(el);
+  }
+
+  function submitBrands(data) {
+    if (isEdit == true) {
+      axios
+        .put(
+          `https://nti-ecommerce.vercel.app/api/v1/brands/${currentBrand._id}`,
+          data,
+          {
+            headers: {
+              token: localStorage.getItem("dbToken"),
+            },
+          },
+        )
+        .then((res) => {
+          console.log(res, "line 93");
+          getAllBrands();
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setIsEdit(false);
+          closeModal();
+        });
+    } else {
+      axios
+        .post("https://nti-ecommerce.vercel.app/api/v1/brands", data, {
+          headers: {
+            token: localStorage.getItem("dbToken"),
+          },
+        })
+        .then((res) => {
+          console.log(res);
+          getAllBrands();
+        })
+        .catch((err) =>
+          console.error("Error:", err.response?.data || err.message),
+        )
+        .finally(() => {
+          closeModal();
+          setIsEdit(false);
+        });
+    }
+  }
   return (
     <>
       <div className="flex justify-end my-4">
@@ -142,7 +169,7 @@ export default function Brands() {
                       type="button"
                       title="Edit"
                       className="text-white bg-warning hover:bg-warning-strong focus:ring-4 focus:ring-warning-medium font-medium rounded-full text-lg w-12 h-12 flex items-center justify-center transition-all active:scale-90"
-                      onClick={() => openModal(brand)}
+                      onClick={() => editBrand(brand)}
                     >
                       <i className="fa-solid fa-pen-to-square"></i>
                     </button>
