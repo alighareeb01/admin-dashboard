@@ -31,11 +31,11 @@ export default function Brands() {
     setIsModalOpen(true);
     if (brand) {
       setIsEdit(true);
-      setCurrentBrandId(brand._id);
+      setCurrentBrand(brand);
       setValue("name", brand.name);
     } else {
       setIsEdit(false);
-      setCurrentBrandId(null);
+      setCurrentBrand({});
       reset({ name: "" });
     }
   }
@@ -43,7 +43,7 @@ export default function Brands() {
   function closeModal() {
     setIsModalOpen(false);
   }
-
+  // don't forget change the data
   function getAllBrands() {
     axios
       .get("https://nti-ecommerce.vercel.app/api/v1/brands", {

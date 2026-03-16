@@ -3,7 +3,7 @@ import styles from "./Categories.module.css";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import z, { ZodError } from "zod";
+import z from "zod";
 import { User } from "../../contexts/UserContext.jsx";
 
 let schema = z.object({
