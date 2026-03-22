@@ -45,38 +45,6 @@ This project uses a branch-based development approach where each feature is deve
 - **Dark/Light Mode**: User-controlled theme toggling for a comfortable experience.
 - **Interactive Elements**: Smooth transitions and modal-based interactions.
 - **Enhanced Error Handling**: SweetAlert2 integration for better user feedback.
-- **Pagination System**: Efficient data pagination for large datasets.
-
-## 🛠️ Tech Stack
-
-- **Frontend Core**: [React 19](https://reactjs.org/) & [Vite](https://vitejs.dev/)
-- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **Form Handling**: [React Hook Form](https://react-hook-form.com/)
-- **Data Validation**: [Zod](https://zod.dev/)
-- **API Interaction**: [Axios](https://axios-http.com/)
-- **Routing**: [React Router Dom 7](https://reactrouter.com/)
-- **UI Components**: [Flowbite](https://flowbite.com/)
-- **Alerts**: [SweetAlert2](https://sweetalert2.github.io/)
-
-## 🏗️ Project Structure
-
-```text
-src/
-├── components/         # Reusable UI components (CRUDs, Auth, UI)
-│   ├── AuthLayout/     # Authentication layout components
-│   ├── BlankLayout/    # Main dashboard layout
-│   ├── Categories/     # Category management CRUD
-│   ├── Brands/         # Brand management CRUD
-│   ├── Products/       # Product management CRUD
-│   ├── Coupons/        # Coupon management CRUD
-│   ├── Pagination/     # Pagination component
-│   └── ...
-├── contexts/           # Global State management (User context, Category context)
-├── api/               # API service layers
-├── App.jsx            # Main application entry and routing
-├── index.css          # Global styles and Tailwind configuration
-└── main.jsx           # Entry point for Vite
-```
 
 ## ⚙️ Getting Started
 
@@ -195,3 +163,32 @@ Distributed under the ISC License. See `LICENSE` for more information.
 **Last Updated**: March 22, 2026  
 **Version**: 1.0.0  
 **Maintainer**: YB122
+
+## 📊 Branch Status Summary
+
+### ✅ Production Ready
+
+- **main**: Stable production branch with all merged features
+
+### ✅ Feature Complete
+
+- **all-component**: Complete component integration
+- **blanklayout**: Authentication foundation
+- **brands**: Brand management system
+- **coupons**: Coupon management system
+- **products**: Product inventory management
+
+### ⚠️ Development Branch
+
+- **all-component-youssef**: Personal development branch (1 commit ahead)
+
+### 🔄 Development Workflow
+
+All branches follow a consistent development pattern:
+
+1. Feature development in dedicated branch
+2. Testing and documentation
+3. Merge to main when complete
+4. Production deployment from main
+
+This structured approach ensures clean, maintainable code and clear separation of concerns across different features.
