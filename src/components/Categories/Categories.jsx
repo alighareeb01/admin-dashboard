@@ -34,6 +34,28 @@ export default function Categories() {
     }
   }, [categoriesAllData, setCategoriesPageData, categoriesPageData.length]);
 
+  // Update page data when categoriesAllData changes and we have a current page
+  useEffect(() => {
+    if (categoriesAllData.length > 0 && categoriesPage > 0) {
+      const currentPageIndex = categoriesPage - 1;
+      if (
+        currentPageIndex < categoriesAllData.length &&
+        categoriesAllData[currentPageIndex]
+      ) {
+        setCategoriesPageData(categoriesAllData[currentPageIndex]);
+      } else if (categoriesAllData.length > 0) {
+        // If current page no longer exists, go to first page
+        setCategoriesPage(1);
+        setCategoriesPageData(categoriesAllData[0]);
+      }
+    }
+  }, [
+    categoriesAllData,
+    categoriesPage,
+    setCategoriesPageData,
+    setCategoriesPage,
+  ]);
+
   const [isEdit, setIsEdit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState({});
@@ -104,6 +126,23 @@ export default function Categories() {
         })
         .catch((err) => {
           console.log(err);
+
+          // Handle different error types
+          if (!err.response) {
+            // Network error - no internet connection
+            toast.error(
+              "Network error! Please check your internet connection.",
+            );
+          } else if (err.response?.status >= 500) {
+            // Server error (500+)
+            toast.error("Server error! Please try again later.");
+          } else {
+            // Other errors (400, 401, 403, 404, etc.)
+            toast.error(
+              "Error: " +
+                (err.response?.data?.message || "Something went wrong"),
+            );
+          }
         })
         .finally(() => {
           setIsEdit(false);
@@ -122,9 +161,26 @@ export default function Categories() {
           setCategoriesPageData(categoriesAllData[categoriesPage - 1]);
           toast.success("Category added successfully!");
         })
-        .catch((err) =>
-          console.error("Error:", err.response?.data || err.message),
-        )
+        .catch((err) => {
+          console.error("Error:", err.response?.data || err.message);
+
+          // Handle different error types
+          if (!err.response) {
+            // Network error - no internet connection
+            toast.error(
+              "Network error! Please check your internet connection.",
+            );
+          } else if (err.response?.status >= 500) {
+            // Server error (500+)
+            toast.error("Server error! Please try again later.");
+          } else {
+            // Other errors (400, 401, 403, 404, etc.)
+            toast.error(
+              "Error: " +
+                (err.response?.data?.message || "Something went wrong"),
+            );
+          }
+        })
         .finally(() => {
           closeModal();
           setIsEdit(false);
@@ -156,8 +212,8 @@ export default function Categories() {
           })
           .then((res) => {
             console.log(res);
+            // Just fetch updated data - useEffect will handle page data updates
             categoriesFetch(setCategoriesAllData);
-            setCategoriesPageData(categoriesAllData[categoriesPage - 1]);
             toast.success("Category deleted successfully!");
           })
           .catch((err) => {
@@ -166,6 +222,22 @@ export default function Categories() {
               "Message:",
               err.response?.data?.message || err.message,
             );
+            // Handle different error types
+            if (!err.response) {
+              // Network error - no internet connection
+              toast.error(
+                "Network error! Please check your internet connection.",
+              );
+            } else if (err.response?.status >= 500) {
+              // Server error (500+)
+              toast.error("Server error! Please try again later.");
+            } else {
+              // Other errors (400, 401, 403, 404, etc.)
+              toast.error(
+                "Error: " +
+                  (err.response?.data?.message || "Something went wrong"),
+              );
+            }
           });
       } else {
         console.log("Category deletion cancelled by user");
