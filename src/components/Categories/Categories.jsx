@@ -13,10 +13,42 @@ let schema = z.object({
   image: z.any().optional(),
 });
 export default function Categories() {
+  let {
+    categoriesPageData,
+    categoriesAllData,
+    setCategoriesPageData,
+    setCategoriesAllData,
+    categoriesPage,
+    setCategoriesPage,
+  } = useContext(User);
+
   useEffect(() => {
-    categoriesFetch();
-  }, []);
-  let { categoriesPageData } = useContext(User);
+    categoriesFetch(setCategoriesAllData);
+  }, [setCategoriesAllData]);
+
+  useEffect(() => {
+    if (categoriesAllData.length > 0 && categoriesPageData.length === 0) {
+      setCategoriesPageData(categoriesAllData[0]);
+    }
+  }, [categoriesAllData, setCategoriesPageData, categoriesPageData.length]);
+
+  // useEffect(() => {
+  //   if (categoriesAllData.length > 0 && categoriesPage > 0) {
+  //     const pageIndex = categoriesPage - 1;
+  //     if (pageIndex < categoriesAllData.length) {
+  //       setCategoriesPageData(categoriesAllData[pageIndex]);
+  //     } else {
+  //       setCategoriesPageData(categoriesAllData[0]);
+  //       setCategoriesPage(1);
+  //     }
+  //   }
+  // }, [
+  //   categoriesAllData,
+  //   categoriesPage,
+  //   setCategoriesPageData,
+  //   setCategoriesPage,
+  // ]);
+
   const [isEdit, setIsEdit] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -80,7 +112,6 @@ export default function Categories() {
         )
         .then((res) => {
           console.log(res, "line 93");
-          categoriesFetch();
         })
         .catch((err) => {
           console.log(err);
@@ -98,7 +129,7 @@ export default function Categories() {
         })
         .then((res) => {
           console.log(res);
-          categoriesFetch();
+          categoriesFetch(setCategoriesAllData);
         })
         .catch((err) =>
           console.error("Error:", err.response?.data || err.message),
@@ -108,6 +139,8 @@ export default function Categories() {
           setIsEdit(false);
         });
     }
+    categoriesFetch(setCategoriesAllData);
+    setCategoriesPageData(categoriesPageData);
   }
   function deleteCategory(id) {
     console.log(id);
@@ -119,13 +152,13 @@ export default function Categories() {
       })
       .then((res) => {
         console.log(res);
-        categoriesFetch();
+        categoriesFetch(setCategoriesAllData);
+        setCategoriesPageData(categoriesPageData);
       })
       .catch((err) => {
         console.error("Status:", err.response?.status); // 401 = Unauthorized, 404 = Not Found
         console.error("Message:", err.response?.data?.message || err.message);
       });
-    console.log("mndavhjasdvhuvsahuvsdhauvhuadsvhudsav");
   }
   function editCategory(el) {
     openModal(el);
@@ -222,11 +255,11 @@ export default function Categories() {
               );
             })}
           </tbody>
-
-          <div className="container mx-auto flex justify-center">
-            <Pagination />
-          </div>
         </table>
+
+        <div className="container mx-auto flex justify-center mt-4">
+          <Pagination />
+        </div>
       </div>
 
       {isModalOpen && (

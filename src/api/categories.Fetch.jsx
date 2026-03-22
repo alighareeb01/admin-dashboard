@@ -1,9 +1,6 @@
 import axios from "axios";
-import React, { useContext } from "react";
-import { User } from "../contexts/UserContext";
 
-export async function categoriesFetch() {
-  const { setCategoriesAllData } = useContext(User);
+export async function categoriesFetch(setCategoriesAllData) {
   let allCategories = [];
   let page = 1;
   console.log("jnnbshbs");
@@ -19,12 +16,16 @@ export async function categoriesFetch() {
         console.log(res);
         console.log(res.data.categories);
         console.log("page = ", page);
-        allCategories.push(res.data.categories);
+
         console.log(allCategories, "line 21");
 
-        if (res.data.categories.length <= 4) {
+        if (res.data.categories.length <= 4 && res.data.categories.length > 0) {
+          flag = false;
+          allCategories.push(res.data.categories);
+        } else if (res.data.categories.length == 0) {
           flag = false;
         } else {
+          allCategories.push(res.data.categories);
           page++;
         }
       })
