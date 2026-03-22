@@ -1,13 +1,15 @@
 import axios from "axios";
-import React from "react";
+import React, { useContext } from "react";
+import { User } from "../contexts/UserContext";
 
-export function categoriesFetch() {
+export async function categoriesFetch() {
+  const { setCategoriesData } = useContext(User);
   let allCategories = [];
   let page = 1;
   console.log("jnnbshbs");
-
-  while (page) {
-    axios
+  let flag = true;
+  while (flag) {
+    await axios
       .get(`https://nti-ecommerce.vercel.app/api/v1/categories?page=${page}`, {
         headers: {
           token: localStorage.getItem("dbToken"),
@@ -15,19 +17,22 @@ export function categoriesFetch() {
       })
       .then((res) => {
         console.log(res);
-        allCategories = [...res.data.categories];
+        console.log(res.data.categories);
+        console.log("page = ", page);
+        allCategories.push(res.data.categories);
+        console.log(allCategories, "line 21");
+
         if (res.data.categories.length <= 4) {
-          page = false;
+          flag = false;
         } else {
           page++;
         }
       })
       .catch((err) => {
         console.log(err);
-        page = false;
+        flag = false;
       });
   }
   console.log(allCategories, "line 26");
-
-  return allCategories;
+  setCategoriesData(allCategories);
 }
