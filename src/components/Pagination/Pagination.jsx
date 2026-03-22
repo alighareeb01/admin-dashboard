@@ -75,37 +75,25 @@ export default function Pagination() {
 
           {categoriesAllData.map((page, index) => {
             const pageNumber = index + 1;
+            const isActive = pageNumber === categoriesPage;
             return (
               <li key={index}>
                 <NavLink
                   onClick={() => {
                     changePage(pageNumber);
                   }}
-                  className="flex items-center justify-center text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading font-medium text-sm w-10 h-10 focus:outline-none"
+                  className={`flex items-center justify-center text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading font-medium text-sm w-10 h-10 focus:outline-none ${
+                    isActive
+                      ? "text-fg-brand bg-neutral-tertiary-medium hover:text-fg-brand"
+                      : ""
+                  }`}
                 >
                   {pageNumber}
                 </NavLink>
               </li>
             );
           })}
-          {/* <li>
-            <NavLink
-              to="#"
-              className="flex items-center justify-center text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading font-medium text-sm w-10 h-10 focus:outline-none"
-            >
-              1
-            </NavLink>
-          </li>
 
-          <li>
-            <NavLink
-              to="#"
-              aria-current="page"
-              className="flex items-center justify-center text-fg-brand bg-neutral-tertiary-medium box-border border border-default-medium hover:text-fg-brand font-medium text-sm w-10 h-10 focus:outline-none"
-            >
-              3
-            </NavLink>
-          </li> */}
           {categoriesPage != categoriesAllData.length && (
             <li>
               <NavLink
