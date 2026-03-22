@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { User } from "../contexts/UserContext";
 
 export async function categoriesFetch() {
-  const { setCategoriesData } = useContext(User);
+  const { setCategoriesAllData } = useContext(User);
   let allCategories = [];
   let page = 1;
   console.log("jnnbshbs");
@@ -34,5 +34,5 @@ export async function categoriesFetch() {
       });
   }
   console.log(allCategories, "line 26");
-  setCategoriesData(allCategories);
+  setCategoriesAllData(allCategories);
 }

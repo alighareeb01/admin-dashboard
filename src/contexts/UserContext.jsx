@@ -21,7 +21,7 @@ export default function UserProvider({ children }) {
       ? localStorage.setItem("userData", JSON.stringify(userData))
       : localStorage.removeItem("userData");
   }, [userData]);
-  const [categoriesData, setCategoriesData] = useState([]);
+  const [categoriesAllData, setCategoriesAllData] = useState([]);
   const [categoriesPage, setCategoriesPage] = useState(1);
   const [categoriesPageData, setCategoriesPageData] = useState([]);
   return (
@@ -33,8 +33,8 @@ export default function UserProvider({ children }) {
         userData,
         categoriesPage,
         setCategoriesPage,
-        categoriesData,
-        setCategoriesData,
+        categoriesAllData,
+        setCategoriesAllData,
         categoriesPageData,
         setCategoriesPageData,
       }}

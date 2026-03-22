@@ -6,17 +6,19 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { User } from "../../contexts/UserContext.jsx";
 import Pagination from "../Pagination/Pagination";
+import { categoriesFetch } from "../../api/categories.Fetch.jsx";
 
 let schema = z.object({
   name: z.string().min(3, "Minumun character 3").max(30, "max character 30"),
   image: z.any().optional(),
 });
 export default function Categories() {
-  const [categoriesData, setCategoriesData] = useState([]);
-  const [isEdit, setIsEdit] = useState(false);
   useEffect(() => {
-    getAllCategories();
+    categoriesFetch();
   }, []);
+  let { categoriesPageData } = useContext(User);
+  const [isEdit, setIsEdit] = useState(false);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState({});
   let { register, handleSubmit, formState, setValue } = useForm({
@@ -40,21 +42,6 @@ export default function Categories() {
     setIsModalOpen(false);
   }
 
-  function getAllCategories() {
-    axios
-      .get("https://nti-ecommerce.vercel.app/api/v1/categories", {
-        headers: {
-          token: localStorage.getItem("dbToken"),
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        setCategoriesData(res.data.categories);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
   function submitCategories(data) {
     console.log(currentCategory, "line 57");
 
@@ -93,7 +80,7 @@ export default function Categories() {
         )
         .then((res) => {
           console.log(res, "line 93");
-          getAllCategories();
+          categoriesFetch();
         })
         .catch((err) => {
           console.log(err);
@@ -111,7 +98,7 @@ export default function Categories() {
         })
         .then((res) => {
           console.log(res);
-          getAllCategories();
+          categoriesFetch();
         })
         .catch((err) =>
           console.error("Error:", err.response?.data || err.message),
@@ -132,7 +119,7 @@ export default function Categories() {
       })
       .then((res) => {
         console.log(res);
-        getAllCategories();
+        categoriesFetch();
       })
       .catch((err) => {
         console.error("Status:", err.response?.status); // 401 = Unauthorized, 404 = Not Found
@@ -178,7 +165,7 @@ export default function Categories() {
             </tr>
           </thead>
           <tbody>
-            {categoriesData.map((el) => {
+            {categoriesPageData.map((el) => {
               return (
                 <tr
                   key={el._id}
@@ -237,7 +224,7 @@ export default function Categories() {
           </tbody>
 
           <div className="container mx-auto flex justify-center">
-            <Pagination categoriesData={categoriesData} />
+            <Pagination />
           </div>
         </table>
       </div>

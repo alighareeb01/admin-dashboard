@@ -3,37 +3,32 @@ import { NavLink } from "react-router-dom";
 import { categoriesFetch } from "../../api/categories.Fetch";
 import { User } from "../../contexts/UserContext";
 
-export default function Pagination(props) {
-  const [isNext, setIsNext] = useState(true);
-  console.log(props, "line 5");
+export default function Pagination() {
   categoriesFetch();
   const {
-    categoriesData,
+    categoriesAllData,
     setCategoriesPageData,
     setCategoriesPage,
     categoriesPage,
   } = useContext(User);
-  console.log(categoriesData.length, "line 8");
+  console.log(categoriesAllData.length, "line 8");
   function changePage(numberPage) {
     categoriesFetch();
-    setCategoriesPageData(categoriesData[numberPage - 1]);
+    setCategoriesPageData(categoriesAllData[numberPage - 1]);
     setCategoriesPage(numberPage);
   }
   function goBack() {
     if (categoriesPage != 1) {
       categoriesFetch();
-      setCategoriesPageData(categoriesData[categoriesPage - 2]);
+      setCategoriesPageData(categoriesAllData[categoriesPage - 2]);
       setCategoriesPage(categoriesPage - 1);
     }
   }
   function goNext() {
-    if (categoriesPage != categoriesData.length) {
+    if (categoriesPage != categoriesAllData.length) {
       categoriesFetch();
-      setCategoriesPageData(categoriesData[categoriesPage]);
+      setCategoriesPageData(categoriesAllData[categoriesPage]);
       setCategoriesPage(categoriesPage + 1);
-      if (categoriesPage == categoriesData.length) {
-        setIsNext(false);
-      }
     }
   }
   let [numberPage, setNumberPage] = useState(0);
@@ -98,7 +93,7 @@ export default function Pagination(props) {
             </NavLink>
           </li>
 
-          {categoriesData.map((page) => {
+          {categoriesAllData.map((page) => {
             setNumberPage(numberPage + 1);
             return (
               <li>
@@ -131,7 +126,7 @@ export default function Pagination(props) {
               3
             </NavLink>
           </li> */}
-          {categoriesPage != categoriesData.length && (
+          {categoriesPage != categoriesAllData.length && (
             <li>
               <NavLink
                 onClick={() => {
