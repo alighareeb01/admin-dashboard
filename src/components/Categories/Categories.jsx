@@ -7,6 +7,8 @@ import z from "zod";
 import { User } from "../../contexts/UserContext.jsx";
 import Pagination from "../Pagination/Pagination";
 import { categoriesFetch } from "../../api/categories.Fetch.jsx";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 let schema = z.object({
   name: z.string().min(3, "Minumun character 3").max(30, "max character 30"),
@@ -32,27 +34,11 @@ export default function Categories() {
     }
   }, [categoriesAllData, setCategoriesPageData, categoriesPageData.length]);
 
-  // useEffect(() => {
-  //   if (categoriesAllData.length > 0 && categoriesPage > 0) {
-  //     const pageIndex = categoriesPage - 1;
-  //     if (pageIndex < categoriesAllData.length) {
-  //       setCategoriesPageData(categoriesAllData[pageIndex]);
-  //     } else {
-  //       setCategoriesPageData(categoriesAllData[0]);
-  //       setCategoriesPage(1);
-  //     }
-  //   }
-  // }, [
-  //   categoriesAllData,
-  //   categoriesPage,
-  //   setCategoriesPageData,
-  //   setCategoriesPage,
-  // ]);
-
   const [isEdit, setIsEdit] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState({});
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
   let { register, handleSubmit, formState, setValue } = useForm({
     defaultValues: {
       name: "",
@@ -112,6 +98,9 @@ export default function Categories() {
         )
         .then((res) => {
           console.log(res, "line 93");
+          categoriesFetch(setCategoriesAllData);
+          setCategoriesPageData(categoriesAllData[categoriesPage - 1]);
+          toast.success("Category updated successfully!");
         })
         .catch((err) => {
           console.log(err);
@@ -130,6 +119,8 @@ export default function Categories() {
         .then((res) => {
           console.log(res);
           categoriesFetch(setCategoriesAllData);
+          setCategoriesPageData(categoriesAllData[categoriesPage - 1]);
+          toast.success("Category added successfully!");
         })
         .catch((err) =>
           console.error("Error:", err.response?.data || err.message),
@@ -140,25 +131,46 @@ export default function Categories() {
         });
     }
     categoriesFetch(setCategoriesAllData);
-    setCategoriesPageData(categoriesPageData);
+    setCategoriesPageData(categoriesAllData[categoriesPage - 1]);
   }
   function deleteCategory(id) {
-    console.log(id);
-    axios
-      .delete(`https://nti-ecommerce.vercel.app/api/v1/categories/${id}`, {
-        headers: {
-          token: localStorage.getItem("dbToken"),
-        },
-      })
-      .then((res) => {
-        console.log(res);
-        categoriesFetch(setCategoriesAllData);
-        setCategoriesPageData(categoriesPageData);
-      })
-      .catch((err) => {
-        console.error("Status:", err.response?.status); // 401 = Unauthorized, 404 = Not Found
-        console.error("Message:", err.response?.data?.message || err.message);
-      });
+    // Show SweetAlert2 confirmation dialog
+    Swal.fire({
+      title: "Delete Category?",
+      text: "Are you sure you want to delete this category? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log(id);
+        axios
+          .delete(`https://nti-ecommerce.vercel.app/api/v1/categories/${id}`, {
+            headers: {
+              token: localStorage.getItem("dbToken"),
+            },
+          })
+          .then((res) => {
+            console.log(res);
+            categoriesFetch(setCategoriesAllData);
+            setCategoriesPageData(categoriesAllData[categoriesPage - 1]);
+            toast.success("Category deleted successfully!");
+          })
+          .catch((err) => {
+            console.error("Status:", err.response?.status); // 401 = Unauthorized, 404 = Not Found
+            console.error(
+              "Message:",
+              err.response?.data?.message || err.message,
+            );
+          });
+      } else {
+        console.log("Category deletion cancelled by user");
+      }
+    });
   }
   function editCategory(el) {
     openModal(el);

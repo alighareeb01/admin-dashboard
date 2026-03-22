@@ -17,6 +17,7 @@ import NotFound from "./components/NotFound/NotFound.jsx";
 import UserProvider from "./contexts/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.jsx";
 import GuestRoute from "./components/GuestRoute/GuestRoute.jsx";
+import { Toaster } from "react-hot-toast";
 let routes = createBrowserRouter([
   {
     path: "/",
@@ -103,6 +104,7 @@ function App() {
     <>
       <UserProvider>
         <RouterProvider router={routes}></RouterProvider>
+        <Toaster />
       </UserProvider>
     </>
   );

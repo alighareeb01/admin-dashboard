@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import z from "zod";
+import toast from "react-hot-toast";
 
 let schema = z.object({
   email: z.string().email("Enter a valid email"),
@@ -37,6 +38,8 @@ export default function Login() {
         console.log(res);
         localStorage.setItem("dbToken", res.data.token);
         // localStorage.setItem("userData", res.data);
+
+        toast.success(`Welcome back! ${res.data.user?.name || "User"}`);
 
         navigate("/");
       })
