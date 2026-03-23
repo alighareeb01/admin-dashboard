@@ -54,9 +54,7 @@ export default function Brands() {
       .then((res) => {
         setBrands(res.data.brands);
       })
-      .catch((err) => {
-
-      });
+      .catch((err) => {});
   }
 
   function deleteBrand(id) {
@@ -69,9 +67,7 @@ export default function Brands() {
       .then((res) => {
         getAllBrands();
       })
-      .catch((err) => {
-     
-      });
+      .catch((err) => {});
   }
 
   function editBrand(el) {
@@ -92,12 +88,9 @@ export default function Brands() {
           },
         )
         .then((res) => {
-         
           getAllBrands();
         })
-        .catch((err) => {
-         
-        })
+        .catch((err) => {})
         .finally(() => {
           setIsEdit(false);
           closeModal();
@@ -110,12 +103,9 @@ export default function Brands() {
           },
         })
         .then((res) => {
-    
           getAllBrands();
         })
-        .catch((err) =>
-       
-        )
+        .catch((err) => {})
         .finally(() => {
           closeModal();
           setIsEdit(false);

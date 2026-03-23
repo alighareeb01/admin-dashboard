@@ -105,12 +105,9 @@ export default function Coupons() {
           },
         )
         .then((res) => {
-         
           getAllCoupons();
         })
-        .catch((err) => {
-        
-        })
+        .catch((err) => {})
         .finally(() => {
           setIsEdit(false);
           closeModal();
@@ -123,12 +120,9 @@ export default function Coupons() {
           },
         })
         .then((res) => {
-        
           getAllCoupons();
         })
-        .catch((err) =>
-         
-        )
+        .catch((err) => {})
         .finally(() => {
           closeModal();
           setIsEdit(false);
