@@ -94,8 +94,8 @@ export default function Coupons() {
         console.error("Message:", err.response?.data?.message || err.message);
       });
   }
-  
-    function editCoupon(el) {
+
+  function editCoupon(el) {
     openModal(el);
     setCurrentCoupon(el);
   }

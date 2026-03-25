@@ -19,7 +19,7 @@ export default function SubCategories() {
     resolver: zodResolver(schema),
   });
   const [currentSubCategory, setCurrentSubCategory] = useState({});
-  const [categoriesData, setCategoriesData ] = useState([]);
+  const [categoriesData, setCategoriesData] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   useEffect(() => {
@@ -76,7 +76,6 @@ export default function SubCategories() {
   }
 
   function deleteSubCategories(id) {
-
     axios
       .delete(`https://nti-ecommerce.vercel.app/api/v1/subCategories/${id}`, {
         headers: {
@@ -86,7 +85,9 @@ export default function SubCategories() {
       .then((res) => {
         getAllSubCategories();
       })
-      .catch((err) => {console.log(err);});
+      .catch((err) => {
+        console.log(err);
+      });
   }
   function editSubCategories(el) {
     openModal(el);
@@ -186,7 +187,8 @@ export default function SubCategories() {
                     <div className="flex items-center">
                       <span className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-neutral-secondary-medium text-brand font-bold text-sm border border-default shadow-sm transition-all hover:bg-neutral-secondary-strong">
                         <i className="fa-solid fa-layer-group text-brand-medium opacity-80"></i>
-                        {categoriesData.find((cat) => cat._id == el.category)?.name || "No Category"}
+                        {categoriesData.find((cat) => cat._id == el.category)
+                          ?.name || "No Category"}
                       </span>
                     </div>
                   </td>
