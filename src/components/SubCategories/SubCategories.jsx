@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import styles from "./SubCategories.module.css";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import { User } from "../../contexts/UserContext.jsx";
+import { subCategoriesCascadeDelete } from "../../api/subCategories.delete.jsx";
 
 let schema = z.object({
-  name: z.string().min(3, "min character 3").max(30, "max character 30"),
+  name: z.string().min(3, "Minumun character 3").max(30, "max character 30"),
   category: z.string(),
 });
 export default function SubCategories() {
@@ -25,6 +28,8 @@ export default function SubCategories() {
     getAllCategories();
   }, []);
 
+  subCategoriesCascadeDelete(subCategories);
+
   function getAllCategories() {
     axios
       .get("https://nti-ecommerce.vercel.app/api/v1/categories", {
@@ -35,7 +40,9 @@ export default function SubCategories() {
       .then((res) => {
         setCategoriesData(res.data.categories);
       })
-      .catch((err) => {});
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,7 +69,9 @@ export default function SubCategories() {
       .then((res) => {
         setSubCategories(res.data.categories);
       })
-      .catch((err) => {});
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function deleteSubCategories(id) {
@@ -97,9 +106,12 @@ export default function SubCategories() {
           },
         )
         .then((res) => {
+          console.log(res, "line 93");
           getAllSubCategories();
         })
-        .catch((err) => {})
+        .catch((err) => {
+          console.log(err);
+        })
         .finally(() => {
           setIsEdit(false);
           closeModal();
@@ -112,9 +124,12 @@ export default function SubCategories() {
           },
         })
         .then((res) => {
+          console.log(res);
           getAllSubCategories();
         })
-        .catch((err) => {})
+        .catch((err) =>
+          console.error("Error:", err.response?.data || err.message),
+        )
         .finally(() => {
           closeModal();
           setIsEdit(false);
