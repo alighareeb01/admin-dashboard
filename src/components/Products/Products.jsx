@@ -10,6 +10,7 @@ import { customerFetch } from "../../api/customer.Fetch.jsx";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { initFlowbite } from "flowbite";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   title: z.string().min(2, "Minimum character 2").max(50, "Max character 50"),
@@ -53,6 +54,8 @@ const arr = [
   },
 ];
 export default function Products() {
+  const nav = useNavigate();
+
   let {
     setProductsPageData,
     productsAllData,
@@ -316,6 +319,10 @@ export default function Products() {
     openModal(el);
     setCurrentProduct(el);
   }
+
+  function productDetails(id) {
+    nav(`/productdetails/${id}`);
+  }
   return (
     <>
       <div className="flex justify-end my-4">
@@ -464,6 +471,18 @@ export default function Products() {
                         }}
                       >
                         <i className="fa-solid fa-trash-can"></i>
+                      </button>
+
+                      <button
+                        type="button"
+                        title="Delete"
+                        className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-full text-lg w-12 h-12 flex items-center justify-center transition-all active:scale-90"
+                        onClick={() => {
+                          // deleteProduct(el._id);
+                          productDetails(el._id);
+                        }}
+                      >
+                        view
                       </button>
                     </div>
                   </td>

@@ -18,6 +18,7 @@ import UserProvider from "./contexts/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.jsx";
 import GuestRoute from "./components/GuestRoute/GuestRoute.jsx";
 import { Toaster } from "react-hot-toast";
+import ProductDetails from "./components/ProductDetails/ProductDetails.jsx";
 let routes = createBrowserRouter([
   {
     path: "/",
@@ -79,6 +80,15 @@ let routes = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "/productdetails/:id",
+        element: (
+          <ProtectedRoute>
+            <ProductDetails />
+          </ProtectedRoute>
+        ),
+      },
+
       {
         path: "/coupons",
         element: (
